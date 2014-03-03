@@ -16,31 +16,31 @@ maxvel=$4
 NPROC=4
 echo $NPROC
 nrtries=5
-printf "results\n----------------------------------------------------------\n" > result.txt
 cd ./dist
+printf "results\n----------------------------------------------------------\n" >../result.txt
 #sequential execution
 for size in 120 180 240
 do
-	printf " --------------Size: %02i--------------\n" $size >> result.txt
-	printf "Sequential execution: \n" >> result.txt
+	printf " --------------Size: %02i--------------\n" $size >>../result.txt
+	printf "Sequential execution: \n" >>../result.txt
 	for (( i=1; i<=nrtries; i++ ))
 	do
-		java -jar NBodyBruteForce.jar $size $timesteps 1 $minmass $maxmass $maxvel | grep seconds >>result.txt
+		java -jar NBodyBruteForce.jar $size $timesteps 1 $minmass $maxmass $maxvel | grep seconds >>../result.txt
 	done			
 done		
 #for all possible number of processors
 for (( processors=2; processors<=NPROC; processors++ ))
 do
-	printf " =============Processors: %02i==============\n" $processors >> result.txt
+	printf " =============Processors: %02i==============\n" $processors >>../result.txt
 	#for different number of bodies
 	for size in 120 180 240
 	do
-		printf " --------------Size: %02i--------------\n" $size >> result.txt
+		printf " --------------Size: %02i--------------\n" $size >>../result.txt
 		#try many times
-		printf "Parallel execution: \n" >> result.txt
+		printf "Parallel execution: \n" >>../result.txt
 		for (( i=1; i<=nrtries; i++ ))
 		do
-			 java -jar NBodyBruteForce.jar $size $timesteps $NPROC $minmass $maxmass $maxvel | grep seconds >>result.txt
+			 java -jar NBodyBruteForce.jar $size $timesteps $NPROC $minmass $maxmass $maxvel | grep seconds >> ../result.txt
 		done
 	done
 done
