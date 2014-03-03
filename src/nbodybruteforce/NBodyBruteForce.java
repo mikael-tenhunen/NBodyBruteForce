@@ -58,15 +58,17 @@ public class NBodyBruteForce {
                 leftBody = bodies[i];
                 rightBody = bodies[j];
                 distance = leftBody.getPosition().distance(rightBody.getPosition());
-                magnitude = G * leftBody.getMass() * rightBody.getMass();
-                directionX = rightBody.getPosition().getX() - leftBody.getPosition().getX();
-                directionY = rightBody.getPosition().getY() - leftBody.getPosition().getY();
-                forceX = (magnitude * directionX) / distance;
-                forceY = (magnitude * directionY) / distance;
-                force = forceMatrix[workerNr][i];
-                force.setLocation(force.getX() + forceX, force.getY() + forceY);
-                force = forceMatrix[workerNr][j];
-                force.setLocation(force.getX() - forceX, force.getY() - forceY);
+                if (distance < 10E-3) {
+                    magnitude = G * leftBody.getMass() * rightBody.getMass();
+                    directionX = rightBody.getPosition().getX() - leftBody.getPosition().getX();
+                    directionY = rightBody.getPosition().getY() - leftBody.getPosition().getY();
+                    forceX = (magnitude * directionX) / distance;
+                    forceY = (magnitude * directionY) / distance;
+                    force = forceMatrix[workerNr][i];
+                    force.setLocation(force.getX() + forceX, force.getY() + forceY);
+                    force = forceMatrix[workerNr][j];
+                    force.setLocation(force.getX() - forceX, force.getY() - forceY);
+                }
             }
         }
     }
@@ -82,7 +84,7 @@ public class NBodyBruteForce {
         for (int i = workerNr; i < n; i += procs) {
             //combine forces
             for (int k = 1; k < procs; k++) {
-                force.setLocation(force.getX() + forceMatrix[k][i].getX(), 
+                force.setLocation(force.getX() + forceMatrix[k][i].getX(),
                         force.getY() + forceMatrix[k][i].getY());
             }
             //move bodies
@@ -92,10 +94,10 @@ public class NBodyBruteForce {
             deltap.setLocation(currBody.getVelocity().getX() + deltav.getX() / 2 * timeStep,
                     currBody.getVelocity().getY() + deltav.getY() / 2 * timeStep);
             velocity = currBody.getVelocity();
-            velocity.setLocation(velocity.getX() + deltav.getX(), 
+            velocity.setLocation(velocity.getX() + deltav.getX(),
                     velocity.getY() + deltav.getY());
             position = currBody.getPosition();
-            position.setLocation(position.getX() + deltap.getX(), 
+            position.setLocation(position.getX() + deltap.getX(),
                     position.getY() + deltap.getY());
             //Reset force
             force.setLocation(0, 0);
@@ -109,7 +111,7 @@ public class NBodyBruteForce {
      */
     public static void main(String[] args) throws InterruptedException {
         int n = 120;
-        int timeSteps = 120000;
+        int timeSteps = 350000;
         int procs = 1;
         double minMass = 0;
         double maxMass = 0.1;
@@ -158,7 +160,7 @@ public class NBodyBruteForce {
         System.out.println("workers: " + procs);
         //
         CyclicBarrier barrier = new CyclicBarrier(procs);
-        ExecutorService executor = Executors.newFixedThreadPool(procs);        
+        ExecutorService executor = Executors.newFixedThreadPool(procs);
         //start simulation
         startTime = System.nanoTime();
         for (int i = 0; i < procs; i++) {
