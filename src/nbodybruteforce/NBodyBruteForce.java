@@ -8,9 +8,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Optional command-line arguments: 1. number of bodies 2. number of time steps
- * 3. number of threads 4. min mass of bodies 5. max mass of bodies 6. max
- * starting velocity component of bodies
+ * Optional command-line arguments: 
+ * 1. number of bodies 
+ * 2. number of time steps
+ * 3. number of threads 
+ * 4. min mass of bodies 
+ * 5. max mass of bodies 
+ * 6. max starting velocity component of bodies
  */
 public class NBodyBruteForce {
 
