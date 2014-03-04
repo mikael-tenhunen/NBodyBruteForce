@@ -25,6 +25,7 @@ public class NBodyGraphics extends JPanel {
         bodies = problem.getBodies();
     }
 
+    @Override
     public void paintComponent(Graphics gr) {
         super.paintComponent(gr);
         Graphics2D g = (Graphics2D) gr;
@@ -43,9 +44,10 @@ public class NBodyGraphics extends JPanel {
             } else if (size < 12) {
                 g.setColor(Color.getHSBColor(0, 1.0f, 1f));
             }
-            g.drawOval(convertXCoord(body.getPosition().getX()), 
-                   convertYCoord(body.getPosition().getY()), 
-                   size, size);
+            halfSize = size / 2;
+            g.drawOval(convertXCoord(body.getPosition().getX()) - halfSize,
+                    convertYCoord(body.getPosition().getY()) - halfSize,
+                    size, size);
 
 //            System.out.println("x: " + convertXCoord(body.getPosition().getX()) + 
 //                    "\ny: " + convertYCoord(body.getPosition().getY()));
