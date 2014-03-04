@@ -23,7 +23,7 @@ import javax.swing.JFrame;
 public class NBodyBruteForce {
 
     public final double G = 6.67384E-11;
-    public static final int timeStep = 1;
+    public static final double timeStep = 1;
     int n;
     int timeSteps;
     int procs;
@@ -62,7 +62,7 @@ public class NBodyBruteForce {
                 leftBody = bodies[i];
                 rightBody = bodies[j];
                 distance = leftBody.getPosition().distance(rightBody.getPosition());
-                if (distance > 10E-3) {
+//                if (distance > 10E-3) {
                     magnitude = G * leftBody.getMass() * rightBody.getMass();
                     directionX = rightBody.getPosition().getX() - leftBody.getPosition().getX();
                     directionY = rightBody.getPosition().getY() - leftBody.getPosition().getY();
@@ -72,7 +72,7 @@ public class NBodyBruteForce {
                     force.setLocation(force.getX() + forceX, force.getY() + forceY);
                     force = forceMatrix[workerNr][j];
                     force.setLocation(force.getX() - forceX, force.getY() - forceY);
-                }
+//                }
             }
         }
     }
@@ -93,10 +93,10 @@ public class NBodyBruteForce {
             }
             //move bodies
             currBody = bodies[i];
-            deltav.setLocation(force.getX() / currBody.getMass() * timeStep,
-                    force.getY() / currBody.getMass() * timeStep);
-            deltap.setLocation(currBody.getVelocity().getX() + deltav.getX() / 2 * timeStep,
-                    currBody.getVelocity().getY() + deltav.getY() / 2 * timeStep);
+            deltav.setLocation(force.getX() / (currBody.getMass() * timeStep),
+                    force.getY() / (currBody.getMass() * timeStep));
+            deltap.setLocation((currBody.getVelocity().getX() + deltav.getX() * 0.5 ) * timeStep,
+                    (currBody.getVelocity().getY() + deltav.getY() * 0.5) * timeStep);
             velocity = currBody.getVelocity();
             velocity.setLocation(velocity.getX() + deltav.getX(),
                     velocity.getY() + deltav.getY());
@@ -121,9 +121,9 @@ public class NBodyBruteForce {
         int n = 2;
         int timeSteps = 350000000;
         int procs = 1;
-        double minMass = 10E20;
+        double minMass = 10E19;
         double maxMass = 10E20;
-        double maxStartVelComponent = 0.1;
+        double maxStartVelComponent = 0;
         double maxDimension = 1000000;
         double height = 800;
         double aspectRatio = 1;
@@ -156,7 +156,9 @@ public class NBodyBruteForce {
             posX = random.nextDouble() * maxDimension * aspectRatio;
             posY = random.nextDouble() * maxDimension;
             velX = random.nextDouble() * maxStartVelComponent;
+            velX -= maxStartVelComponent * 0.5;
             velY = random.nextDouble() * maxStartVelComponent;
+            velY -= maxStartVelComponent * 0.5;
             mass = random.nextDouble() * (maxMass - minMass) + minMass;
             bodies[i] = new Body(new Point2D.Double(posX, posY),
                     new Point2D.Double(velX, velY), mass);

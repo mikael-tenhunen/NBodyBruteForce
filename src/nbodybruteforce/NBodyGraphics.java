@@ -29,10 +29,10 @@ public class NBodyGraphics extends JPanel {
         for (Body body : bodies) {
             g.drawRect(convertXCoord(body.getPosition().getX()), 
                    convertYCoord(body.getPosition().getY()), 10, 10);
-            System.out.println("x: " + convertXCoord(body.getPosition().getX()) + 
-                    "\ny: " + convertYCoord(body.getPosition().getY()));
-//            System.out.println("x: " + body.getPosition().getX() + 
-//                    "\ny: " + body.getPosition().getY());
+//            System.out.println("x: " + convertXCoord(body.getPosition().getX()) + 
+//                    "\ny: " + convertYCoord(body.getPosition().getY()));
+            System.out.println("x: " + body.getPosition().getX() + 
+                    "\ny: " + body.getPosition().getY());
         }
     }  
     
