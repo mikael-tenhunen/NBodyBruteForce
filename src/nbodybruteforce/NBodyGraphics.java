@@ -24,11 +24,11 @@ public class NBodyGraphics extends JPanel {
     public void paintComponent(Graphics gr) {
         super.paintComponent(gr);
         Graphics2D g = (Graphics2D) gr;
-        g.setColor(Color.red);
+        g.setColor(Color.white);
         bodies = problem.getBodies();
         for (Body body : bodies) {
             g.drawRect(convertXCoord(body.getPosition().getX()), 
-                   convertYCoord(body.getPosition().getY()), 10, 10);
+                   convertYCoord(body.getPosition().getY()), 1, 1);
 //            System.out.println("x: " + convertXCoord(body.getPosition().getX()) + 
 //                    "\ny: " + convertYCoord(body.getPosition().getY()));
 //            System.out.println("x: " + body.getPosition().getX() + 
