@@ -30,10 +30,12 @@ public class NBodyGraphics extends JPanel {
         g.setColor(Color.white);
         bodies = problem.getBodies();
         int size;
+        int halfSize;
         for (Body body : bodies) {
             size = convertMass(body.getMass());
-            g.drawOval(convertXCoord(body.getPosition().getX()), 
-                   convertYCoord(body.getPosition().getY()), 
+            halfSize = size / 2;
+            g.drawOval(convertXCoord(body.getPosition().getX()) - halfSize, 
+                   convertYCoord(body.getPosition().getY()) - halfSize, 
                    size, size);
 //            System.out.println("x: " + convertXCoord(body.getPosition().getX()) + 
 //                    "\ny: " + convertYCoord(body.getPosition().getY()));
