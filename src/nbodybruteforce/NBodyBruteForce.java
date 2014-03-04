@@ -1,11 +1,15 @@
 package nbodybruteforce;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.geom.Point2D;
 import java.util.Random;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import javax.swing.JFrame;
 
 /**
  * Optional command-line arguments: 
@@ -24,7 +28,7 @@ public class NBodyBruteForce {
     int timeSteps;
     int procs;
     Point2D.Double[][] forceMatrix;
-    Body[] bodies;
+    private Body[] bodies;
 
     public NBodyBruteForce(int n, int timeSteps, int procs, Body[] bodies) {
         this.n = n;
@@ -58,7 +62,7 @@ public class NBodyBruteForce {
                 leftBody = bodies[i];
                 rightBody = bodies[j];
                 distance = leftBody.getPosition().distance(rightBody.getPosition());
-                if (distance < 10E-3) {
+                if (distance > 10E-3) {
                     magnitude = G * leftBody.getMass() * rightBody.getMass();
                     directionX = rightBody.getPosition().getX() - leftBody.getPosition().getX();
                     directionY = rightBody.getPosition().getY() - leftBody.getPosition().getY();
@@ -103,6 +107,10 @@ public class NBodyBruteForce {
             force.setLocation(0, 0);
         }
     }
+    
+    public Body[] getBodies() {
+        return bodies;
+    }    
 
     /**
      * @param args the command line arguments 1. number of bodies 2. number of
@@ -110,13 +118,14 @@ public class NBodyBruteForce {
      * bodies 6. max starting velocity component of bodies
      */
     public static void main(String[] args) throws InterruptedException {
-        int n = 120;
-        int timeSteps = 350000;
+        int n = 2;
+        int timeSteps = 350000000;
         int procs = 1;
-        double minMass = 0;
-        double maxMass = 0.1;
+        double minMass = 10E20;
+        double maxMass = 10E20;
         double maxStartVelComponent = 0.1;
         double maxDimension = 1000000;
+        double height = 800;
         double aspectRatio = 1;
         long startTime;
         long endTime;
@@ -158,13 +167,25 @@ public class NBodyBruteForce {
         System.out.println("n: " + n);
         System.out.println("ticks (at " + NBodyBruteForce.timeStep + "): " + timeSteps);
         System.out.println("workers: " + procs);
-        //
+        //initiate graphics
+        double width = height * aspectRatio;
+        JFrame frame = new JFrame();
+        NBodyGraphics graphics = new NBodyGraphics(nBodyProblem, maxDimension, 
+               width, height);
+        frame.setPreferredSize(new Dimension((int) width, (int) height));
+        frame.setSize(new Dimension((int) width, (int) height));
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        graphics.setBackground(Color.black);
+        frame.add(graphics, BorderLayout.CENTER);
+        frame.setVisible(true);
+        graphics.repaint();
+        //thread control
         CyclicBarrier barrier = new CyclicBarrier(procs);
         ExecutorService executor = Executors.newFixedThreadPool(procs);
         //start simulation
         startTime = System.nanoTime();
         for (int i = 0; i < procs; i++) {
-            executor.execute(new Worker(i, nBodyProblem, barrier, timeSteps));
+            executor.execute(new Worker(i, nBodyProblem, barrier, timeSteps, graphics));
         }
         executor.shutdown();
         executor.awaitTermination(100, TimeUnit.DAYS);

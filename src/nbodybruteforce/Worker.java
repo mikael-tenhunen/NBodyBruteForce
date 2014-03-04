@@ -11,12 +11,19 @@ public class Worker implements Runnable {
     private final int timeSteps;
     private final NBodyBruteForce problem;
     private final CyclicBarrier barrier;
+    NBodyGraphics graphics;
 
-    public Worker(int workerNr, NBodyBruteForce problem, CyclicBarrier barrier, int timeSteps) {
+    public Worker(int workerNr, NBodyBruteForce problem, CyclicBarrier barrier, int timeSteps, NBodyGraphics graphics) {
         this.workerNr = workerNr;
         this.problem = problem;
         this.barrier = barrier;
         this.timeSteps = timeSteps;
+        if (workerNr == 0) {
+            this.graphics = graphics;
+        }
+        else {
+            graphics = null;
+        }
     }
 
     @Override
@@ -31,6 +38,9 @@ public class Worker implements Runnable {
                 problem.moveBodies(workerNr);
 //                System.out.println("Worker nr " + workerNr + " done moving bodies. Waiting...");
                 barrier.await();
+                if (workerNr == 0) {
+                    graphics.repaint();
+                }
             }
         } catch (InterruptedException ex) {
             ex.printStackTrace();
