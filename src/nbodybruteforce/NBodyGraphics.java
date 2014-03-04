@@ -31,6 +31,7 @@ public class NBodyGraphics extends JPanel {
         //g.setColor(Color.white);
         bodies = problem.getBodies();
         int size;
+        int halfSize;
         for (Body body : bodies) {
             size = convertMass(body.getMass());
             if (size < 3) {
