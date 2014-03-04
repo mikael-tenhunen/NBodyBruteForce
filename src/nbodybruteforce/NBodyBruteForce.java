@@ -63,7 +63,7 @@ public class NBodyBruteForce {
                 rightBody = bodies[j];
                 distance = leftBody.getPosition().distance(rightBody.getPosition());
 //                if (distance > 10E-3) {
-                    magnitude = G * leftBody.getMass() * rightBody.getMass();
+                    magnitude = (G * leftBody.getMass() * rightBody.getMass()) / (distance*distance);
                     directionX = rightBody.getPosition().getX() - leftBody.getPosition().getX();
                     directionY = rightBody.getPosition().getY() - leftBody.getPosition().getY();
                     forceX = (magnitude * directionX) / distance;
@@ -80,7 +80,7 @@ public class NBodyBruteForce {
     void moveBodies(int workerNr) {
         Point2D.Double deltav = new Point2D.Double();
         Point2D.Double deltap = new Point2D.Double();
-        Point2D.Double force = new Point2D.Double();
+        Point2D.Double force = new Point2D.Double(0,0);
         Point2D.Double velocity;
         Point2D.Double position;
         Body currBody;
@@ -90,11 +90,12 @@ public class NBodyBruteForce {
             for (int k = 1; k < procs; k++) {
                 force.setLocation(force.getX() + forceMatrix[k][i].getX(),
                         force.getY() + forceMatrix[k][i].getY());
+                forceMatrix[k][i].setLocation(0,0);
             }
             //move bodies
             currBody = bodies[i];
-            deltav.setLocation(force.getX() / (currBody.getMass() * timeStep),
-                    force.getY() / (currBody.getMass() * timeStep));
+            deltav.setLocation((force.getX() / currBody.getMass()) * timeStep,
+                    (force.getY() / currBody.getMass()) * timeStep);
             deltap.setLocation((currBody.getVelocity().getX() + deltav.getX() * 0.5 ) * timeStep,
                     (currBody.getVelocity().getY() + deltav.getY() * 0.5) * timeStep);
             velocity = currBody.getVelocity();
@@ -105,6 +106,7 @@ public class NBodyBruteForce {
                     position.getY() + deltap.getY());
             //Reset force
             force.setLocation(0, 0);
+            System.out.println("    Point " + i + "");
         }
     }
     
@@ -120,7 +122,7 @@ public class NBodyBruteForce {
     public static void main(String[] args) throws InterruptedException {
         int n = 2;
         int timeSteps = 350000000;
-        int procs = 1;
+        int procs = 4;
         double minMass = 10E19;
         double maxMass = 10E20;
         double maxStartVelComponent = 0;
