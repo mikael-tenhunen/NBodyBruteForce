@@ -185,7 +185,7 @@ public class NBodyBruteForce {
             double width = height * aspectRatio;
             JFrame frame = new JFrame();
             graphics = new NBodyGraphics(nBodyProblem, maxDimension,
-                    width, height, minMass, maxMass);
+                    width, height, maxMass);
             frame.setPreferredSize(new Dimension((int) width, (int) height));
             frame.setSize(new Dimension((int) width, (int) height));
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

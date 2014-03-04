@@ -11,17 +11,15 @@ public class NBodyGraphics extends JPanel {
     double maxDimension;
     double width;
     double height;
-    double invertedMinMass;
     double invertedMaxMass;
     
     public NBodyGraphics(NBodyBruteForce problem, double maxDimension, double width, 
-            double height, double minMass, double maxMass) {
+            double height, double maxMass) {
         super();
         this.problem = problem;
         this.maxDimension = maxDimension;
         this.width = width;
         this.height = height;
-        invertedMinMass = 1 / minMass;
         invertedMaxMass = 1 / maxMass;
         bodies = problem.getBodies();
     }
