@@ -38,7 +38,7 @@ public class Worker implements Runnable {
                 problem.moveBodies(workerNr);
 //                System.out.println("Worker nr " + workerNr + " done moving bodies. Waiting...");
                 barrier.await();
-                if (workerNr == 0) {
+                if (workerNr == 0 && graphics != null) {
                     graphics.repaint();
                 }
             }

@@ -12,24 +12,20 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JFrame;
 
 /**
- * Optional command-line arguments: 
- * 1. number of bodies 
- * 2. number of time steps
- * 3. number of threads 
- * 4. min mass of bodies 
- * 5. max mass of bodies 
- * 6. max starting velocity component of bodies
+ * Optional command-line arguments: 1. number of bodies 2. number of time steps
+ * 3. number of threads 4. min mass of bodies 5. max mass of bodies 6. max
+ * starting velocity component of bodies
  */
 public class NBodyBruteForce {
 
     public final double G = 6.67384E-11;
-    public final double softening = 3E4;    //to soften forces
-    public static final double timeStep = 1E6;
+    public final double softening = 3E8;    //to soften forces
+    public static final double timeStep = 5E2;
     int n;
     int timeSteps;
     int procs;
     Point2D.Double[][] forceMatrix;
-    private Body[] bodies;
+    private final Body[] bodies;
 
     public NBodyBruteForce(int n, int timeSteps, int procs, Body[] bodies) {
         this.n = n;
@@ -52,6 +48,7 @@ public class NBodyBruteForce {
         Body leftBody;
         Body rightBody;
         Point2D.Double force;
+        double invertedDistance;
         /*       
          workerNr is an index for row in forceMatrix
          i and j identify the pair of bodies being processed
@@ -63,17 +60,17 @@ public class NBodyBruteForce {
                 leftBody = bodies[i];
                 rightBody = bodies[j];
                 distance = leftBody.getPosition().distance(rightBody.getPosition());
-//                if (distance > 10E-3) {
-                    magnitude = (G * leftBody.getMass() * rightBody.getMass()) / (distance*distance + softening*softening);
-                    directionX = rightBody.getPosition().getX() - leftBody.getPosition().getX();
-                    directionY = rightBody.getPosition().getY() - leftBody.getPosition().getY();
-                    forceX = (magnitude * directionX) / distance;
-                    forceY = (magnitude * directionY) / distance;
-                    force = forceMatrix[workerNr][i];
-                    force.setLocation(force.getX() + forceX, force.getY() + forceY);
-                    force = forceMatrix[workerNr][j];
-                    force.setLocation(force.getX() - forceX, force.getY() - forceY);
-//                }
+                magnitude = (G * leftBody.getMass() * rightBody.getMass()) / (distance * distance + softening);
+                directionX = rightBody.getPosition().getX() - leftBody.getPosition().getX();
+                directionY = rightBody.getPosition().getY() - leftBody.getPosition().getY();
+                //Strength reduction with inverted distance
+                invertedDistance = 1 / distance;
+                forceX = magnitude * directionX * invertedDistance;
+                forceY = magnitude * directionY * invertedDistance;
+                force = forceMatrix[workerNr][i];
+                force.setLocation(force.getX() + forceX, force.getY() + forceY);
+                force = forceMatrix[workerNr][j];
+                force.setLocation(force.getX() - forceX, force.getY() - forceY);
             }
         }
     }
@@ -81,26 +78,28 @@ public class NBodyBruteForce {
     void moveBodies(int workerNr) {
         Point2D.Double deltav = new Point2D.Double();
         Point2D.Double deltap = new Point2D.Double();
-        Point2D.Double force = new Point2D.Double(0,0);
+        Point2D.Double force = new Point2D.Double();
         Point2D.Double velocity;
         Point2D.Double position;
         Body currBody;
+        double timeStepByMass;
 
         for (int i = workerNr; i < n; i += procs) {
             //combine forces
             for (int k = 0; k < procs; k++) {
                 force.setLocation(force.getX() + forceMatrix[k][i].getX(),
                         force.getY() + forceMatrix[k][i].getY());
-                forceMatrix[k][i].setLocation(0,0);
+                forceMatrix[k][i].setLocation(0, 0);
             }
             //move bodies
             currBody = bodies[i];
-            deltav.setLocation((force.getX() / currBody.getMass()) * timeStep,
-                    (force.getY() / currBody.getMass()) * timeStep);
-            deltap.setLocation((currBody.getVelocity().getX() + deltav.getX() * 0.5 ) * timeStep,
+            //Strength reduction with timeStep/Mass
+            timeStepByMass = timeStep / currBody.getMass();
+            deltav.setLocation(force.getX() * timeStepByMass,
+                    force.getY() * timeStepByMass);
+            //Strength reduction "*0.5" instead of division by 2
+            deltap.setLocation((currBody.getVelocity().getX() + deltav.getX() * 0.5) * timeStep,
                     (currBody.getVelocity().getY() + deltav.getY() * 0.5) * timeStep);
-            System.out.println("    deltap " + i + "x: " + deltap.getX() +
-                    " y: " + deltap.getY());
             velocity = currBody.getVelocity();
             velocity.setLocation(velocity.getX() + deltav.getX(),
                     velocity.getY() + deltav.getY());
@@ -109,14 +108,12 @@ public class NBodyBruteForce {
                     position.getY() + deltap.getY());
             //Reset force
             force.setLocation(0, 0);
-            System.out.println("    Point " + i + "x: " + currBody.getPosition().getX() +
-                    " y: " + currBody.getPosition().getY());
         }
     }
-    
+
     public Body[] getBodies() {
         return bodies;
-    }    
+    }
 
     /**
      * @param args the command line arguments 1. number of bodies 2. number of
@@ -124,17 +121,19 @@ public class NBodyBruteForce {
      * bodies 6. max starting velocity component of bodies
      */
     public static void main(String[] args) throws InterruptedException {
-        int n = 2;
-        int timeSteps = 350000000;
+        int n = 100;
+        int timeSteps = 150000;
         int procs = 1;
-        double minMass = 100;
-        double maxMass = 100;
-        double maxStartVelComponent = 0;
-        double maxDimension = 100;
+        double minMass = 1E5;
+        double maxMass = 1E8;
+        double maxStartVelComponent = 0.00;
+        double maxDimension = 100000;
+        //height is screen height for graphical interface
         double height = 800;
         double aspectRatio = 1;
         long startTime;
         long endTime;
+        boolean graphicalInterface = false;
         //read command-line arguments
         if (args.length > 0) {
             n = Integer.parseInt(args[0]);
@@ -154,6 +153,11 @@ public class NBodyBruteForce {
         if (args.length > 5) {
             maxStartVelComponent = (double) Integer.parseInt(args[5]);
         }
+        if (args.length > 6) {
+            if (args[6].equals("no") || args[6].equals("n"))
+                graphicalInterface = false;
+        }
+        
         //initialize bodies
         Body[] bodies = new Body[n];
         double posX, posY, velX, velY, mass;
@@ -176,17 +180,20 @@ public class NBodyBruteForce {
         System.out.println("ticks (at " + NBodyBruteForce.timeStep + "): " + timeSteps);
         System.out.println("workers: " + procs);
         //initiate graphics
-        double width = height * aspectRatio;
-        JFrame frame = new JFrame();
-        NBodyGraphics graphics = new NBodyGraphics(nBodyProblem, maxDimension, 
-               width, height);
-        frame.setPreferredSize(new Dimension((int) width, (int) height));
-        frame.setSize(new Dimension((int) width, (int) height));
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        graphics.setBackground(Color.black);
-        frame.add(graphics, BorderLayout.CENTER);
-        frame.setVisible(true);
-        graphics.repaint();
+        NBodyGraphics graphics = null;
+        if (graphicalInterface) {
+            double width = height * aspectRatio;
+            JFrame frame = new JFrame();
+            graphics = new NBodyGraphics(nBodyProblem, maxDimension,
+                    width, height, minMass, maxMass);
+            frame.setPreferredSize(new Dimension((int) width, (int) height));
+            frame.setSize(new Dimension((int) width, (int) height));
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            graphics.setBackground(Color.black);
+            frame.add(graphics, BorderLayout.CENTER);
+            frame.setVisible(true);
+            graphics.repaint();
+        }
         //thread control
         CyclicBarrier barrier = new CyclicBarrier(procs);
         ExecutorService executor = Executors.newFixedThreadPool(procs);
