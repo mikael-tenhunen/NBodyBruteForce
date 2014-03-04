@@ -133,7 +133,7 @@ public class NBodyBruteForce {
         double aspectRatio = 1;
         long startTime;
         long endTime;
-        boolean graphicalInterface = false;
+        boolean graphicalInterface = true;
         //read command-line arguments
         if (args.length > 0) {
             n = Integer.parseInt(args[0]);
