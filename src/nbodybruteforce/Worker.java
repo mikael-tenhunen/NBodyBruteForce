@@ -42,9 +42,7 @@ public class Worker implements Runnable {
                     graphics.repaint();
                 }
             }
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        } catch (BrokenBarrierException ex) {
+        } catch (InterruptedException | BrokenBarrierException ex) {
             ex.printStackTrace();
         }
 //        System.out.println("Worker nr " + workerNr + " done!");
