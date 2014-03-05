@@ -10,7 +10,7 @@ timesteps=70000
 
 #timesteps=$1
 NPROC=4
-graphics=no
+nographics=yes
 echo $NPROC
 nrtries=5
 cd ./dist
@@ -22,7 +22,7 @@ do
 	printf "Sequential execution: \n" >>../result.txt
 	for (( i=1; i<=nrtries; i++ ))
 	do
-		java -jar NBodyBruteForce.jar $size $timesteps 1 $graphics | grep seconds >>../result.txt
+		java -jar NBodyBruteForce.jar $size $timesteps 1 | grep seconds >>../result.txt
 	done			
 done		
 #for all possible number of processors
@@ -37,7 +37,7 @@ do
 		printf "Parallel execution: \n" >>../result.txt
 		for (( i=1; i<=nrtries; i++ ))
 		do
-			 java -jar NBodyBruteForce.jar $size $timesteps $processors $graphics | grep seconds >> ../result.txt
+			 java -jar NBodyBruteForce.jar $size $timesteps $processors | grep seconds >> ../result.txt
 		done
 	done
 done
