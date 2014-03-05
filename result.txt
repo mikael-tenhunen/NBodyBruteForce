@@ -2,88 +2,24 @@ results
 ----------------------------------------------------------
  --------------Size: 120--------------
 Sequential execution: 
-Time: 0.033950055 seconds
-Time: 0.032061827 seconds
-Time: 0.032356281 seconds
-Time: 0.031641521 seconds
-Time: 0.041247211000000006 seconds
+Time: 2.8143164680000003 seconds
+Time: 2.8112565160000003 seconds
+Time: 2.8152228000000004 seconds
+Time: 2.8126995040000002 seconds
  --------------Size: 180--------------
 Sequential execution: 
-Time: 0.043550369000000005 seconds
-Time: 0.043652966 seconds
-Time: 0.044537507000000004 seconds
-Time: 0.047665835000000004 seconds
-Time: 0.042337712 seconds
+Time: 6.219365883 seconds
+Time: 6.2114167600000005 seconds
+Time: 6.412742641 seconds
+Time: 6.230816224000001 seconds
+Time: 6.211432332 seconds
  --------------Size: 240--------------
 Sequential execution: 
-Time: 0.046399124 seconds
-Time: 0.047947498000000005 seconds
-Time: 0.05154021 seconds
-Time: 0.045677805 seconds
-Time: 0.048688734000000004 seconds
+Time: 11.423551905 seconds
+Time: 11.246256456000001 seconds
+Time: 11.195203664000001 seconds
  =============Processors: 02==============
  --------------Size: 120--------------
 Parallel execution: 
-Time: 0.027625368 seconds
-Time: 0.032548204000000004 seconds
-Time: 0.029577928000000003 seconds
-Time: 0.025237975000000003 seconds
-Time: 0.032348176 seconds
- --------------Size: 180--------------
-Parallel execution: 
-Time: 0.043832182000000004 seconds
-Time: 0.035905544000000005 seconds
-Time: 0.047011354000000005 seconds
-Time: 0.056717198 seconds
-Time: 0.057240092000000006 seconds
- --------------Size: 240--------------
-Parallel execution: 
-Time: 0.054843001 seconds
-Time: 0.056065023000000005 seconds
-Time: 0.043260394 seconds
-Time: 0.047399322 seconds
-Time: 0.054162544 seconds
- =============Processors: 03==============
- --------------Size: 120--------------
-Parallel execution: 
-Time: 0.025909168000000003 seconds
-Time: 0.024578683 seconds
-Time: 0.033098758 seconds
-Time: 0.02603725 seconds
-Time: 0.029026594000000003 seconds
- --------------Size: 180--------------
-Parallel execution: 
-Time: 0.041383892000000005 seconds
-Time: 0.043801450000000006 seconds
-Time: 0.042926265000000005 seconds
-Time: 0.049530742 seconds
-Time: 0.03462346 seconds
- --------------Size: 240--------------
-Parallel execution: 
-Time: 0.0426652 seconds
-Time: 0.051976443000000004 seconds
-Time: 0.043750533 seconds
-Time: 0.054657369000000004 seconds
-Time: 0.036524757000000005 seconds
- =============Processors: 04==============
- --------------Size: 120--------------
-Parallel execution: 
-Time: 0.025922918000000003 seconds
-Time: 0.031796151 seconds
-Time: 0.028013131 seconds
-Time: 0.028119704000000002 seconds
-Time: 0.031054155000000003 seconds
- --------------Size: 180--------------
-Parallel execution: 
-Time: 0.040889198 seconds
-Time: 0.041605423 seconds
-Time: 0.041296999 seconds
-Time: 0.032006794000000005 seconds
-Time: 0.028177189000000002 seconds
- --------------Size: 240--------------
-Parallel execution: 
-Time: 0.042955256000000004 seconds
-Time: 0.044053016 seconds
-Time: 0.046715436000000006 seconds
-Time: 0.042087678 seconds
-Time: 0.053647329 seconds
+Time: 1.9476383810000002 seconds
+Time: 2.081787914 seconds

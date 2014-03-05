@@ -118,10 +118,10 @@ public class NBodyBruteForce {
     /**
      * @param args the command line arguments 1. number of bodies 2. number of
      * time steps 3. number of threads 4. min mass of bodies 5. max mass of
-     * bodies 6. max starting velocity component of bodies
+     * bodies 6. max starting velocity component of bodies 7. Whether to use graphics
      */
     public static void main(String[] args) throws InterruptedException {
-        int n = 100;
+        int n = 120;
         int timeSteps = 150000;
         int procs = 1;
         double minMass = 1E5;
@@ -145,10 +145,10 @@ public class NBodyBruteForce {
             procs = Integer.parseInt(args[2]);
         }
         if (args.length > 3) {
-            minMass = (double) Integer.parseInt(args[3]);
+            minMass = Double.parseDouble(args[3]);
         }
         if (args.length > 4) {
-            maxMass = (double) Integer.parseInt(args[4]);
+            maxMass = Double.parseDouble(args[4]);
         }
         if (args.length > 5) {
             maxStartVelComponent = (double) Integer.parseInt(args[5]);
