@@ -30,13 +30,9 @@ public class Worker implements Runnable {
     public void run() {
         try {
             for (int i = 0; i < timeSteps; i++) {
-//                System.out.println("Worker nr " + workerNr + " enters iteration " + i);
                 problem.calculateForces(workerNr);
-//                System.out.println("Worker nr " + workerNr + " done calculating forces. Waiting...");
                 barrier.await();
-//                System.out.println("Worker nr " + workerNr + " will move bodies");
                 problem.moveBodies(workerNr);
-//                System.out.println("Worker nr " + workerNr + " done moving bodies. Waiting...");
                 barrier.await();
                 if (workerNr == 0 && graphics != null) {
                     graphics.repaint();
@@ -45,6 +41,5 @@ public class Worker implements Runnable {
         } catch (InterruptedException | BrokenBarrierException ex) {
             ex.printStackTrace();
         }
-//        System.out.println("Worker nr " + workerNr + " done!");
     }
 }
